@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import Iterable
 
 import numpy as np
-import pypdfium2 as pdfium
 from PIL import Image
 
 import matplotlib
@@ -295,6 +294,8 @@ def _join_manifest_values(values: Iterable[str]) -> str:
 
 
 def render_pdf_first_page_to_jpg(source: Path, destination: Path) -> tuple[int, int]:
+    import pypdfium2 as pdfium
+
     destination.parent.mkdir(parents=True, exist_ok=True)
     document = pdfium.PdfDocument(str(source))
     try:
@@ -675,7 +676,7 @@ def _export_training_curves(spec: EvidenceFigureSpec, destination: Path, sources
     history = pd.read_csv(sources[0])
     summary = pd.read_csv(sources[1])
     manifest = pd.read_csv(sources[2])
-    required = {"system_id", "public_name", "epoch", "heldout_loss", "train_loss"}
+    required = {"system_id", "public_name", "seed", "epoch", "heldout_loss", "train_loss"}
     missing = required - set(history.columns)
     if missing:
         raise RuntimeError(f"Training diagnostics are missing columns: {sorted(missing)}")
@@ -706,7 +707,7 @@ def _export_training_curves(spec: EvidenceFigureSpec, destination: Path, sources
         fig,
         (
             f"Real outer held-out repeated-walk task loss over {epoch_count} epochs; "
-            f"mean with IQR band across {seed_count} seeds x 5 subject-held-out folds."
+            f"mean with IQR band across {seed_count} fold-averaged seed curves."
         ),
         y=0.92,
     )
@@ -721,12 +722,7 @@ def _export_training_curves(spec: EvidenceFigureSpec, destination: Path, sources
             ("heldout_loss", ax_heldout, "Held-out task loss ↓"),
             ("train_loss", ax_train, "Training objective ↓"),
         ):
-            curve = (
-                subset.groupby("epoch")[metric]
-                .agg(mean="mean", low=lambda values: values.quantile(0.25), high=lambda values: values.quantile(0.75))
-                .reset_index()
-                .sort_values("epoch")
-            )
+            curve = _seed_averaged_epoch_curve(subset, metric)
             ax.plot(curve["epoch"], curve["mean"], color=color, linewidth=2.3, label=label)
             ax.fill_between(
                 curve["epoch"].to_numpy(dtype=float),
@@ -769,6 +765,24 @@ def _export_training_curves(spec: EvidenceFigureSpec, destination: Path, sources
     )
     fig.tight_layout(rect=(0.02, 0.08, 0.98, 0.86))
     return _save_matplotlib_jpg(fig, destination)
+
+
+def _seed_averaged_epoch_curve(subset: pd.DataFrame, metric: str) -> pd.DataFrame:
+    seed_epoch = (
+        subset.groupby(["seed", "epoch"], as_index=False)[metric]
+        .mean()
+        .dropna(subset=[metric])
+    )
+    return (
+        seed_epoch.groupby("epoch")[metric]
+        .agg(
+            mean="mean",
+            low=lambda values: values.quantile(0.25),
+            high=lambda values: values.quantile(0.75),
+        )
+        .reset_index()
+        .sort_values("epoch")
+    )
 
 
 def _export_phase_feature_sensitivity(spec: EvidenceFigureSpec, destination: Path, sources: tuple[Path, ...]) -> tuple[int, int]:

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import sys
 from pathlib import Path
 
 import pytest
@@ -9,6 +10,7 @@ import pytest
 RELEASE_ROOT = Path(__file__).resolve().parents[1]
 PROJECT_ROOT = RELEASE_ROOT.parent
 EXPORTER_PATH = RELEASE_ROOT / "scripts" / "export_release.py"
+ASSET_EXPORTER_PATH = RELEASE_ROOT / "scripts" / "export_release_assets.py"
 
 EXPECTED_ALLOWLIST = {
     "python_pipeline/phase3/data.py": "src/gpanet/data.py",
@@ -23,6 +25,20 @@ def _load_exporter():
     spec = importlib.util.spec_from_file_location("export_release_under_test", EXPORTER_PATH)
     assert spec and spec.loader
     module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def _load_asset_exporter():
+    assert ASSET_EXPORTER_PATH.is_file(), f"Missing asset exporter: {ASSET_EXPORTER_PATH}"
+    spec = importlib.util.spec_from_file_location(
+        "export_release_assets_under_test",
+        ASSET_EXPORTER_PATH,
+    )
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
 
@@ -126,3 +142,21 @@ def test_environment_and_requirements_are_portable_and_pinned() -> None:
         "torch>=2.11",
     ):
         assert banned not in combined
+
+
+def test_training_curve_band_is_seed_level_after_fold_averaging() -> None:
+    asset_exporter = _load_asset_exporter()
+    frame = asset_exporter.pd.DataFrame(
+        [
+            {"seed": 1, "epoch": 1, "heldout_loss": 0.0},
+            {"seed": 1, "epoch": 1, "heldout_loss": 10.0},
+            {"seed": 2, "epoch": 1, "heldout_loss": 4.0},
+            {"seed": 2, "epoch": 1, "heldout_loss": 6.0},
+        ]
+    )
+
+    curve = asset_exporter._seed_averaged_epoch_curve(frame, "heldout_loss")
+
+    assert curve.loc[0, "mean"] == 5.0
+    assert curve.loc[0, "low"] == 5.0
+    assert curve.loc[0, "high"] == 5.0

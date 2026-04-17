@@ -32,7 +32,7 @@ The headline row is GPA-Net under the selected same-scope contract: `subject_id`
 
 ![Held-out training curve summary](assets/figures/heldout-training-curves.jpg)
 
-The curve uses real subject-held-out repeated-walk task loss over 100 epochs, 3 seeds, and 5 folds. Lines are means and shaded bands are interquartile ranges across 15 seed-fold blocks. Lower held-out loss indicates stronger performance under the fixed-control evaluation contract; the training optimization panel is shown for convergence context only.
+The curve uses real subject-held-out repeated-walk task loss over 100 epochs, 3 seeds, and 5 folds. Lines are means and shaded bands are interquartile ranges across fold-averaged seed curves. Lower held-out loss indicates stronger performance under the fixed-control evaluation contract; the training optimization panel is shown for convergence context only.
 
 | Method | Scope | Classification score ↑ | Balanced accuracy ↑ | Macro F1 ↑ | AUROC ↑ | Forefoot RMSE ↓ | Rearfoot RMSE ↓ | Entire-foot RMSE ↓ |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
