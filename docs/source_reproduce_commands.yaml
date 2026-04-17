@@ -1,0 +1,84 @@
+schema_version: 1
+data_policy: Raw data is not bundled; provide a CSV matching docs/data_contract.md.
+commands:
+  historical_base_candidate:
+    scheme_id: E2E-03_no_tr06
+    description: Reproduce the historical Phase 8 base candidate from its saved config
+      and runner family.
+    command: python scripts/reproduce_gpa_net.py --recipe historical_base_candidate
+    status: release-wrapper
+    source_status: historical-template
+    expected_artifacts:
+    - results/historical_base_candidate/trial_predictions.csv
+    - results/historical_base_candidate/summary.json
+  historical_repeated_walk_confirmation:
+    scheme_id: L4_FUS02
+    description: Rebuild the posthoc repeated-walk L4 + FUS-02 confirmation from Phase
+      8 predictions.
+    command: python scripts/reproduce_gpa_net.py --recipe historical_repeated_walk_confirmation
+    status: release-wrapper
+    source_status: run
+    expected_artifacts:
+    - results/historical_repeated_walk_confirmation/reconstructed_l4_fus02_predictions.csv
+    - results/historical_repeated_walk_confirmation/reconstruction_check.json
+  corrected_protocol_reference:
+    scheme_id: F83M-09
+    description: Representative later corrected-protocol comparison row; inspect Phase
+      08.3/08.6 artifacts before rerunning.
+    command: python scripts/reproduce_gpa_net.py --recipe corrected_protocol_reference
+    status: release-wrapper
+    source_status: dry-run-needed
+    expected_artifacts:
+    - results/corrected_protocol_reference/phase8_3
+  tuning_stage_candidate:
+    scheme_id: L4_FUS02
+    description: Run one bounded GPA-Net tuning-stage candidate or selected config
+      IDs from the frozen run matrix.
+    command: python scripts/reproduce_gpa_net.py --recipe tuning_stage_candidate
+    status: release-wrapper
+    source_status: run
+    expected_artifacts:
+    - results/tuning_stage_candidate/summary.json
+    - results/tuning_stage_candidate/trial_predictions.csv
+    - results/tuning_stage_candidate/<candidate-id>__repeated-walk.csv
+  gpa_net_final:
+    scheme_id: L4_FUS02
+    description: Reproduce the selected GPA-Net evidence package from completed
+      tuning-stage outputs.
+    command: python scripts/reproduce_gpa_net.py --recipe gpa_net_final
+    status: release-wrapper
+    source_status: run
+    expected_artifacts:
+    - results/gpa_net_final/tuning_summary.csv
+    - results/gpa_net_final/train_test_gap.csv
+    - results/gpa_net_final/trial_level_summary.csv
+  fusion_diagnostics:
+    scheme_id: L4_FUS02
+    description: Compare prediction-time fusion variants over completed Phase 08.7
+      trial predictions.
+    command: python scripts/reproduce_gpa_net.py --recipe fusion_diagnostics
+    status: release-wrapper
+    source_status: run
+    expected_artifacts:
+    - results/fusion_diagnostics/fusion_variant_summary.csv
+    - results/fusion_diagnostics/fusion_variant_wrong_groups.csv
+  stability_diagnostics:
+    scheme_id: L4_FUS02
+    description: Summarize seed and fold stability for completed GPA-Net tuning
+      candidates.
+    command: python scripts/reproduce_gpa_net.py --recipe stability_diagnostics
+    status: release-wrapper
+    source_status: run
+    expected_artifacts:
+    - results/stability_diagnostics/stability_partition_metrics.csv
+    - results/stability_diagnostics/stability_summary.csv
+  split_diagnostics:
+    scheme_id: L4_FUS02
+    description: Summarize split composition and overlap counts for completed GPA-Net
+      tuning candidates.
+    command: python scripts/reproduce_gpa_net.py --recipe split_diagnostics
+    status: release-wrapper
+    source_status: run
+    expected_artifacts:
+    - results/split_diagnostics/split_fold_metrics.csv
+    - results/split_diagnostics/split_summary.csv
