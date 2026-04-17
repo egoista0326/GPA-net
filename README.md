@@ -27,7 +27,6 @@ The three regression targets are forefoot pressure-balance asymmetry (UpperAsymm
 ## Results
 
 The headline row is GPA-Net under the selected same-scope contract: `subject_id` GroupKFold with prediction-time repeated-walk mean fusion. Classification metrics are higher-better; RMSE metrics are lower-better. Diagnostic, ablation, and support rows are documented in [the evidence notes](docs/evidence.md) rather than promoted in the main table.
-The bounded public claim policy is recorded in [docs/claim_scope.md](docs/claim_scope.md).
 
 ![GPA-Net performance summary](assets/figures/performance-summary.jpg)
 
@@ -41,15 +40,15 @@ The curve uses real subject-held-out repeated-walk task loss over 100 epochs, 3 
 
 ## Ablation And Interpretability
 
-The README control view compares the selected GPA-Net recipe with fixed-recipe architectural controls. GPA-Net is strongest in this fixed-control view, but this is not a matched-search architecture proof. The stricter first/second-attention ablation is kept in [the evidence notes](docs/evidence.md).
+The README control view compares the selected GPA-Net recipe with fixed-recipe architectural controls.  The stricter first/second-attention ablation is kept in [the evidence notes](docs/evidence.md).
 
 ![GPA-Net fixed-control comparison](assets/figures/fixed-control-comparison.jpg)
 
-Attention and interpretability panels are plausibility evidence, not causal proof. They are useful for checking whether learned salience is biomechanically coherent, not for proving that one phase causes an output.
+They are useful for checking whether learned salience is biomechanically coherent, not for proving that one phase causes an output.
 
 ![Phase-feature sensitivity](assets/figures/phase-feature-sensitivity.jpg)
 
-The sensitivity map perturbs phase-specific feature families on held-out folds and reports within-output positive loss increase. `RIC` is Right Initial Contact, `DS1` First Double Support, `RSS` Right Single Support, `LIC` Left Initial Contact, `DS2` Second Double Support, and `LSS` Left Single Support. It is predictive sensitivity, not causal proof.
+The sensitivity map perturbs phase-specific feature families on held-out folds and reports within-output positive loss increase. `RIC` is Right Initial Contact, `DS1` First Double Support, `RSS` Right Single Support, `LIC` Left Initial Contact, `DS2` Second Double Support, and `LSS` Left Single Support.
 
 ![GPA-Net interpretability summary](assets/figures/interpretability-summary.jpg)
 
@@ -82,7 +81,7 @@ gpa-net/
 `-- tests/
 ```
 
-Long-form evidence, reproduction notes, claim-scope policy, and the public-to-internal method map live under [docs/](docs/).
+Long-form evidence, reproduction notes  and the public-to-internal method map live under [docs/](docs/).
 
 ## Reproduce
 
@@ -101,7 +100,6 @@ Reader guide:
 - [docs/method.md](docs/method.md): six gait phases, the paper-derived gait-cycle label mapping, and the public dual-attention description.
 - [docs/reproduction.md](docs/reproduction.md): release-local validation and supported reproduction recipes.
 - [docs/evidence.md](docs/evidence.md): supporting rows, canonical public roles, figure provenance, and artifact hashes.
-- [docs/claim_scope.md](docs/claim_scope.md): supported and unsupported public claims.
 - [docs/method_code_map.md](docs/method_code_map.md): readable public names mapped to internal experiment IDs.
 
 ## Citation, License, And Data Access

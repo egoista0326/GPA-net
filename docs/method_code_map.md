@@ -21,4 +21,3 @@ This is the only public release document that maps readable names to internal ex
 | pressure target/export overlay | FE-08 | Pressure timing/load target-export overlay used for target construction support. |
 | prediction-time repeated-walk mean fusion | FUS-02 | Mean aggregation over repeated held-out walk predictions. |
 
-Use this map for reproducibility and source lookup only. It does not change the public claim scope in [claim_scope.md](claim_scope.md).

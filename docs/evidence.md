@@ -10,8 +10,6 @@ GPA-Net is reported under `subject_id` GroupKFold with prediction-time repeated-
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | GPA-Net | selected final system | protagonist | subject-held-out repeated-walk | 0.7689 | 0.7487 | 0.7483 | 0.8098 | 0.0368 | 0.0219 | 0.0574 |
 
-These are descriptive point estimates. The release does not claim a statistically tested win.
-See [claim_scope.md](claim_scope.md) for the supported and unsupported public claims.
 
 ## Canonical Public-Role Mapping
 
@@ -44,7 +42,7 @@ The figure manifest records release-owned JPG paths, source paths, source hashes
 
 ## Fixed-Control README View
 
-The README control view uses the selected tuned GPA-Net recipe against fixed-recipe context rows. GPA-Net is classification-best within this fixed-control view, but this is not a matched-search architecture proof.
+The README control view uses the selected tuned GPA-Net recipe against fixed-recipe context rows. 
 
 | Method | Role | Scope | Score ↑ | Balanced accuracy ↑ | Macro F1 ↑ | AUROC ↑ | Total RMSE ↓ |
 | --- | --- | --- | ---: | ---: | ---: | ---: | ---: |
@@ -64,15 +62,12 @@ The ablation family keeps the same data, split, seeds, folds, features, loss wei
 | Second-attention-only | false | true | 0.7371 | 0.7727 | 0.0369 | 0.0215 | 0.0582 |
 | No-attention control | false | false | 0.7687 | 0.7753 | 0.0379 | 0.0216 | 0.0599 |
 
-The bounded reading is a tradeoff: full dual-attention keeps the strongest TotalAsymmetry RMSE in this family, while first-attention-only raises classification metrics and gives back TotalAsymmetry RMSE. This is not an uncaveated architecture superiority claim.
 
 ## Interpretability Summary
 
 The interpretability figure is plausibility evidence only. It helps inspect whether target-level salience patterns are compatible with gait-phase reasoning across Right Initial Contact, First Double Support, Right Single Support, Left Initial Contact, Second Double Support, and Left Single Support.
 
-The phase-feature sensitivity panel is predictive evidence from outer held-out perturbations. It replaces the earlier exploratory feature-space projection because that view did not provide a useful separation claim. The sensitivity map reports positive loss increases after median replacement of phase-specific feature families; it is not causal proof.
-
-Attention evidence is not causal proof and does not show that a single phase causally explains any output.
+The phase-feature sensitivity panel is predictive evidence from outer held-out perturbations. It replaces the earlier exploratory feature-space projection because that view did not provide a useful separation claim. 
 
 ## Figure Manifest References
 
